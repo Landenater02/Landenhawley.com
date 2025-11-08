@@ -53,10 +53,7 @@ export default function Navigation() {
         }
     };
 
-    const handleOpenLandenApps = () => {
-        setMenuOpen(false);
-        history.push('/landenapps');
-    };
+    // removed unused handleOpenLandenApps to satisfy CI linter
 
     return (
         <header className="app-nav">

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function Home() {
     const containerRef = useRef(null);
@@ -7,7 +7,7 @@ export default function Home() {
     useEffect(() => {
         // 1) Load your static HTML (no <script> in it)
         fetch('/pages/home.html')
-            .then(r => r.text())
+            .then((r) => r.text())
             .then(setHtml)
             .catch(console.error);
     }, []);
@@ -26,9 +26,8 @@ export default function Home() {
             'InternTRatsGame.png',
             'SongsPCF.png',
             'Titan5k.png',
-            'VocalConcert.png'
+            'VocalConcert.png',
         ];
-
 
         const descriptions = {
             'SongsPCF.png': {
@@ -78,7 +77,7 @@ export default function Home() {
         // Align index with whatever src is currently in the HTML
         let index = Math.max(
             0,
-            images.findIndex(name => (folder + name).toLowerCase() === img.src.toLowerCase())
+            images.findIndex((name) => (folder + name).toLowerCase() === img.src.toLowerCase())
         );
         if (index === -1) {
             index = 0;
@@ -100,17 +99,20 @@ export default function Home() {
 
         // Click → open modal
         const handleOpen = () => {
-            
             const currentImage = images[index];
             const info = descriptions[currentImage];
-            if (info == null) { return; } 
+            if (info == null) {
+                return;
+            }
             modalTitle.textContent = info?.title ?? 'Untitled Project';
             modalDescription.textContent = info?.text ?? 'No description available yet.';
             modal.style.display = 'flex';
         };
 
         const handleClose = () => (modal.style.display = 'none');
-        const handleBackdrop = e => { if (e.target === modal) handleClose(); };
+        const handleBackdrop = (e) => {
+            if (e.target === modal) handleClose();
+        };
 
         img.addEventListener('click', handleOpen);
         closeModal.addEventListener('click', handleClose);
@@ -128,3 +130,4 @@ export default function Home() {
 
     return <div ref={containerRef} />;
 }
+

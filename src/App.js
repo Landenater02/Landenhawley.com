@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, Link, Redirect, useLocation } from 'react-router-dom';
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import AboutMe from './pages/AboutMe';
 import Login from './pages/LandenApps/Login';
