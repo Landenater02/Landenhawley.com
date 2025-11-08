@@ -1,8 +1,49 @@
 import React from 'react';
+import { Switch, Route, Link, Redirect, useLocation } from 'react-router-dom';
+import Home from './pages/Home';
+import AboutMe from './pages/AboutMe';
+import Login from './pages/LandenApps/Login';
+import LandenApps from './pages/LandenApps/LandenApps';
+import SongViewer from './pages/LandenApps/SongViewer/SongViewer';
+import ProtectedRoute from './pages/Components/ProtectedRoute';
+import Navigation from './pages/Components/Navigation';
+import Breadcrumbs from './pages/Components/Breadcrumbs';
+import Footer from './pages/Components/Footer';
+import CssPxConverter from './pages/LandenApps/CssPxConverter/CssPxConverter';
 
+function RouteRenderer() {
+  // show Breadcrumbs on all pages except the login page
+  const { pathname } = useLocation();
+  if (pathname.startsWith('/login')) return null;
+  return <Breadcrumbs />;
+}
 function App() {
-  const value = 'World';
-  return <div>Hello {value}</div>;
+  return (
+    <div>
+      <Navigation />
+      {/* Breadcrumbs shown globally except on the login page */}
+      <div className="container" style={{ paddingTop: 12 }}>
+        <RouteRenderer />
+      </div>
+
+      <Switch>
+  <Route exact path="/home" component={Home} />
+  <Route exact path="/login" component={Login} />
+  <ProtectedRoute exact path="/landenapps/songviewer" component={SongViewer} />
+  <ProtectedRoute path="/landenapps/css-converter" component={CssPxConverter} />
+  <ProtectedRoute path="/landenapps" component={LandenApps} />
+    <Route exact path="/AboutMe" component={AboutMe} />
+        <Route exact path="/">
+          <Redirect to="/home" />
+        </Route>
+        <Route path="*">
+          <h2>404 - Not Found</h2>
+          <p>The page you're looking for doesn't exist.</p>
+        </Route>
+          </Switch>
+          <Footer />
+    </div>
+  );
 }
 
 export default App;

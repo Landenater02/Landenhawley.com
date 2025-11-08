@@ -1,0 +1,96 @@
+<main class="container section stack">
+    <!-- Hero -->
+    <section class="stack" id="intro">
+        <h1>Welcome to <span style="color: var(--brand);">landenhawley.com!!!</span></h1>
+        <p class="lead">
+            I'm Landen Hawley - a power platform software engineer, jazz trumpet musician, and body builder.
+            I love building tools, and along the way I've had plenty of ideas for tools that can be useful for those with similar passions,
+            and this website is a space where I can build and show off those tools.
+        </p>
+
+        <div class="stack" style="margin-top: 2rem;">
+            <a class="btn btn--primary" href="/AboutMe">Learn more about me</a>
+            <a class="btn" href="mailto:hawlel75@uwosh.edu">Get in touch</a>
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section class="section stack" id="highlights">
+        <h2>What you'll find here</h2>
+        <div class="grid grid--3">
+            <div class="card">
+                <h3>Software Projects</h3>
+                <p>
+                    My web and app development work can be found in the LandenApps section of this site
+                </p>
+            </div>
+            <div class="card">
+                <h3>Music & Performance</h3>
+                <p>
+                    Information on what I'm doing with music right now, and have done in the past!
+                </p>
+            </div>
+            <div class="card">
+                <h3>Ideas & Writing</h3>
+                <p>
+                    Notes on tech, weightlifting, and any other information I think is useful to know!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section stack" id="gallery">
+        <h2>Gallery</h2>
+        <p>Here are some visuals of what I've been up to.</p>
+
+        <div id="gallery-display"
+             class="card"
+             style="height: 30rem; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer;">
+            <img id="gallery-image"
+                 src="/Images/Gallery/SongsPCF.png"
+                 alt="Gallery"
+                 style="max-height: 100%; max-width: 100%; object-fit: cover; border-radius: 8px;" />
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="gallery-modal" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 1rem;">
+        <div style="
+    background: white;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    text-align: left;
+    position: relative;">
+            <button id="close-modal" style="
+      position: absolute;
+      top: .75rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;">
+                &times;
+            </button>
+            <h3 id="modal-title" style="margin-top: 0;">Project Title</h3>
+            <p id="modal-description">Description goes here.</p>
+        </div>
+    </div>
+
+    
+
+
+
+
+</main>
