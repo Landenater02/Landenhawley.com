@@ -6,7 +6,9 @@ export default function Home() {
 
     useEffect(() => {
         // 1) Load your static HTML (no <script> in it)
-        fetch('/pages/home.html')
+        // NOTE: Hosting is case-sensitive; the file lives in public/Pages/home.html so
+        // request the matching path.
+        fetch('/Pages/home.html')
             .then((r) => r.text())
             .then(setHtml)
             .catch(console.error);
@@ -18,8 +20,9 @@ export default function Home() {
         // 2) Inject HTML
         containerRef.current.innerHTML = html;
 
-        // 3) Wire up the gallery (since inline <script> won't run)
-        const folder = '/Images/Gallery/'; // normalize to lowercase & match your actual paths
+    // 3) Wire up the gallery (since inline <script> won't run)
+    // Folder must match the casing used in public/ (hosting is case-sensitive).
+    const folder = '/Images/Gallery/';
         const images = [
             'AthleticBandHelper.png',
             'DrumLineLive.png',

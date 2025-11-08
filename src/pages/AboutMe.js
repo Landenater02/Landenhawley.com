@@ -4,7 +4,7 @@ export default function AboutMe() {
     const [html, setHtml] = useState('');
 
     useEffect(() => {
-        fetch('/pages/aboutme.html')
+        fetch('/Pages/aboutme.html')
             .then(res => res.text())
             .then(setHtml)
             .catch(console.error);
