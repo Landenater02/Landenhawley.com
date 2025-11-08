@@ -9,13 +9,13 @@ export default function LandenApps() {
       href: '/landenapps/songviewer',
       description:
         'A Supabase + React app that lets you browse and display sheet music charts in real time.',
-      image: '/images/gallery/SongsPCF.png',
+      image: '/Images/gallery/SongsPCF.png',
     },{
       title: 'Css Px to Rem/Em converter',
       href: '/landenapps/css-converter',
       description:
         'A tool to convert CSS pixel values to flexible rem or em units.',
-      image: '/images/CssPxtoRem.png',
+      image: '/Images/CssPxtoRem.png',
     },
     
   ];
