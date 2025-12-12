@@ -1,6 +1,16 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState,useEffect } from 'react';
 
 export default function CssPxConverter() {
+    
+    useEffect(() => {
+        document.title = "CSS PX to REM/EM Converter";
+    }, []);
+    var description = "Translate your CSS code to use flexible units of measurement. This is most useful for converting legacy CSS, or CSS of unknown quality to translate better with text resizers and different screen sizes"
+    const metaDesc = document.querySelector("meta[name='description']");
+    if (metaDesc) {
+        metaDesc.setAttribute("content", description);
+    }  
+
     const [css, setCss] = useState(
         `/* Paste your CSS here */
 .container { padding: 24px; margin-top: 32px; }
@@ -10,8 +20,9 @@ export default function CssPxConverter() {
 @media (min-width: 768px) {
   .container { padding: 32px; }
 }
-`
-    );
+`);
+
+
     const [unit, setUnit] = useState('rem'); // 'rem' or 'em'
     const [base, setBase] = useState(16);    // px per 1 rem/em
 

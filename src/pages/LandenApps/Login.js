@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import supabase from '../../supabaseClient';
 
+
+
 export default function Login() {
+
+    useEffect(() => {
+        document.title = "Log In";
+    }, []);
+    var description = "Log in to use Landen Hawley's custom built apps"
+    const metaDesc = document.querySelector("meta[name='description']");
+    if (metaDesc) {
+        metaDesc.setAttribute("content", description);
+    }
     const [mode, setMode] = useState('signin'); // 'signin' | 'signup'
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,6 +27,8 @@ export default function Login() {
     const from = (location && location.state && location.state.from) || { pathname: '/landenapps' };
 
     const clearMessages = () => { setMessage(null); setError(null); };
+
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -53,7 +66,7 @@ export default function Login() {
             {children}
         </button>
     );
-
+    
     return (
         <main className="container section" style={{ maxWidth: 520 }}>
             <div className="card stack">

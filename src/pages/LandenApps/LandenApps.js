@@ -1,24 +1,37 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 
+import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 
 export default function LandenApps() {
-  const projects = [
+
+    useEffect(() => {
+        document.title = "LandenApps";
+    }, []);
+
+    var description = "View custom apps made by Landen Hawley"
+    const metaDesc = document.querySelector("meta[name='description']");
+    if (metaDesc) {
+        metaDesc.setAttribute("content", description);
+    }
+
+    const projects = [
     {
       title: 'Song Viewer',
       href: '/landenapps/songviewer',
       description:
         'A Supabase + React app that lets you browse and display sheet music charts in real time.',
-      image: '/Images/gallery/SongsPCF.png',
+            image: '/Images/gallery/SongsPCF.png',
     },{
       title: 'Css Px to Rem/Em converter',
-      href: '/landenapps/css-converter',
+      href: '/landenapps/LandenAppsThumbnails/css-converter',
       description:
         'A tool to convert CSS pixel values to flexible rem or em units.',
       image: '/Images/CssPxtoRem.png',
     },
     
-  ];
+    ];
+
+
 
   return (
     <main className="container section stack">

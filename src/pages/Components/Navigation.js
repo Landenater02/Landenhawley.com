@@ -53,7 +53,17 @@ export default function Navigation() {
         }
     };
 
-    // removed unused handleOpenLandenApps to satisfy CI linter
+
+    const handleUpdateAvatarClick = async () => {
+        try {
+            
+            setMenuOpen(false);
+            history.push('/landenapps/AvatarGenerator');
+        } catch (err) {
+            console.error('Avatar Switch Failed', err);
+        }
+    };
+
 
     return (
         <header className="app-nav">
@@ -79,7 +89,7 @@ export default function Navigation() {
                         <div className="nav-user-menu" onClick={(e) => e.stopPropagation()}>
                             {session ? (
                                 <>
-                                   
+                                    <button className="btn" onClick={handleUpdateAvatarClick}>Update Avatar</button>
                                     <button className="btn" onClick={handleSignOut}>Sign out</button>
                                 </>
                             ) : (

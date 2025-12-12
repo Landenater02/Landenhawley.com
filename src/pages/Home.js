@@ -17,6 +17,15 @@ export default function Home() {
     useEffect(() => {
         if (!html || !containerRef.current) return;
 
+
+        document.title = "Home";
+        var description = "Home Page of Landen Hawley's portfolio site"
+        const metaDesc = document.querySelector("meta[name='description']");
+        if (metaDesc) {
+            metaDesc.setAttribute("content", description);
+        }
+
+       
         // 2) Inject HTML
         containerRef.current.innerHTML = html;
 
