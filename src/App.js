@@ -11,6 +11,7 @@ import Breadcrumbs from './pages/Components/Breadcrumbs';
 import Footer from './pages/Components/Footer';
 import CssPxConverter from './pages/LandenApps/CssPxConverter/CssPxConverter';
 import AvatarGenerator from './pages/LandenApps/AvatarGenerator/AvatarGenerator';
+import LucasMurphyClicker from './pages/LandenApps/LucasMurphyClicker/LucasMurphyClicker';
 function RouteRenderer() {
     // show Breadcrumbs on all pages except the login page
     const { pathname } = useLocation();
@@ -48,7 +49,7 @@ function App() {
                 <ProtectedRoute exact path="/landenapps/songviewer" component={SongViewer} />
                 <ProtectedRoute exact path="/landenapps/css-converter" component={CssPxConverter} />
                 <ProtectedRoute exact path="/landenapps/AvatarGenerator" component={AvatarGenerator} />
-                
+                <ProtectedRoute exact path="/landenapps/LucasMurphyClicker" component={LucasMurphyClicker} />
                 {/* =================================================== */}
 
 

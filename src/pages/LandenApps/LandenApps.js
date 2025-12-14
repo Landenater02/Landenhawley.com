@@ -14,20 +14,32 @@ export default function LandenApps() {
         metaDesc.setAttribute("content", description);
     }
 
+    
+    var ThumbnailPath = "/Images/LandenAppsThumbnails/";
+    var appPath = "/landenapps/";
     const projects = [
     {
       title: 'Song Viewer',
-      href: '/landenapps/songviewer',
+      href: 'songviewer',
       description:
         'A Supabase + React app that lets you browse and display sheet music charts in real time.',
             image: '/Images/gallery/SongsPCF.png',
     },{
       title: 'Css Px to Rem/Em converter',
-      href: '/landenapps/LandenAppsThumbnails/css-converter',
+      href: 'css-converter',
       description:
         'A tool to convert CSS pixel values to flexible rem or em units.',
-      image: '/Images/CssPxtoRem.png',
-    },
+      image: ThumbnailPath + 'CssPxtoRem.png',
+        },
+        {
+            title: 'Lucas Murphy Clicker',
+            href: 'LucasMurphyClicker',
+            description:
+                'At the request of my friends: a game where users collect \'Lukes\' by clicking in a Cookie Clicker style fashion',
+            image: ThumbnailPath + 'LucasMurphyClicker.png',
+        },
+
+
     
     ];
 
@@ -71,7 +83,7 @@ export default function LandenApps() {
                   View Application
                 </a>
               ) : (
-                <Link to={p.href} className="btn btn--primary">
+                <Link to={appPath + p.href} className="btn btn--primary">
                   View Application
                 </Link>
               )}
