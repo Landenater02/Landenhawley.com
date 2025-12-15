@@ -15,17 +15,31 @@ function useLandenLiftsServiceWorker() {
         pathname === "/landenapps/landenlifts" ||
         pathname.startsWith("/landenapps/landenlifts/");
 
+    const didRegisterRef = React.useRef(false);
+
     useEffect(() => {
         if (!isLifts) return;
+        if (didRegisterRef.current) return;
+        didRegisterRef.current = true;
+
         if (!("serviceWorker" in navigator)) return;
 
-        navigator.serviceWorker
-            .register("/landenapps/landenlifts/sw.js", {
-                scope: "/landenapps/landenlifts/"
-            })
-            .catch(console.error);
+        (async () => {
+            try {
+                // If already registered for this scope, don't re-register
+                const existing = await navigator.serviceWorker.getRegistration("/landenapps/landenlifts/");
+                if (existing) return;
+
+                await navigator.serviceWorker.register("/landenapps/landenlifts/sw.js", {
+                    scope: "/landenapps/landenlifts/"
+                });
+            } catch (e) {
+                console.error("SW register failed:", e);
+            }
+        })();
     }, [isLifts]);
 }
+
 
 function LandenLifts() {
     useLandenLiftsServiceWorker();

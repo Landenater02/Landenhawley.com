@@ -1,5 +1,5 @@
 // src/pages/LandenApps/LandenLifts/Dashboard/Dashboard.jsx
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import supabase from "../../../../supabaseClient";
 
 function todayISODate() {
@@ -107,8 +107,24 @@ export default function Dashboard() {
 
     const loadingRef = useRef(false);
 
-    const selectedDay = useMemo(() => days.find((d) => d.id === selectedDayId) || null, [days, selectedDayId]);
-    const currentExercise = useMemo(() => exercises.find((e) => e.id === currentExerciseId) || null, [exercises, currentExerciseId]);
+    // ---- refs to avoid dependency loops ----
+    const exercisesRef = useRef([]);
+    const daysRef = useRef([]);
+    const maxByExerciseRef = useRef({});
+
+    useEffect(() => { exercisesRef.current = exercises; }, [exercises]);
+    useEffect(() => { daysRef.current = days; }, [days]);
+    useEffect(() => { maxByExerciseRef.current = maxByExercise; }, [maxByExercise]);
+
+    const selectedDay = useMemo(
+        () => days.find((d) => d.id === selectedDayId) || null,
+        [days, selectedDayId]
+    );
+
+    const currentExercise = useMemo(
+        () => exercises.find((e) => e.id === currentExerciseId) || null,
+        [exercises, currentExerciseId]
+    );
 
     const liftsByExercise = useMemo(() => {
         const map = {};
@@ -147,8 +163,8 @@ export default function Dashboard() {
         return { topSet, warmups: warms, repsTarget: repsT, pct, maxE1rm: maxE };
     }, [currentExercise, maxByExercise]);
 
-    function ensureInputsForExercise(exerciseId) {
-        const ex = exercises.find((e) => e.id === exerciseId);
+    const ensureInputsForExercise = useCallback((exerciseId) => {
+        const ex = exercisesRef.current.find((e) => e.id === exerciseId);
         if (!ex) return;
 
         setWorkInputsByExercise((prev) => {
@@ -165,9 +181,9 @@ export default function Dashboard() {
 
             return { ...prev, [exerciseId]: rows };
         });
-    }
+    }, []);
 
-    async function fetchMaxForExercise(exerciseId, userId) {
+    const fetchMaxForExercise = useCallback(async (exerciseId, userId) => {
         const res = await supabase
             .from("landenlifts_lifts")
             .select("weight, reps, created_at")
@@ -192,9 +208,9 @@ export default function Dashboard() {
         }));
 
         return best;
-    }
+    }, []);
 
-    async function loadDayExercises(splitDayId, userId) {
+    const loadDayExercises = useCallback(async (splitDayId, userId) => {
         const exRes = await supabase
             .from("landenlifts_split_exercises")
             .select("id, name, rep_range_start, rep_range_end, rpe, split_day, order_index, user_id, warmup_sets, working_sets")
@@ -204,18 +220,17 @@ export default function Dashboard() {
         if (exRes.error) throw exRes.error;
 
         const list = exRes.data || [];
+
+        // keep ref in sync immediately
+        exercisesRef.current = list;
         setExercises(list);
 
         const first = list[0]?.id || "";
         setCurrentExerciseId(first);
 
-        // prefetch max for first exercise (warmups/recs render quickly)
-        if (first && userId) {
-            await fetchMaxForExercise(first, userId);
-        }
-
         if (first) ensureInputsForExercise(first);
-    }
+        if (first && userId) await fetchMaxForExercise(first, userId);
+    }, [ensureInputsForExercise, fetchMaxForExercise]);
 
     async function findTodaySession(u, activeSplitId, splitDayRow) {
         const date = todayISODate();
@@ -299,7 +314,6 @@ export default function Dashboard() {
                 .eq("id", inf.active_split)
                 .single();
             if (splitRes.error) throw splitRes.error;
-
             setSplit(splitRes.data);
 
             const dRes = await supabase
@@ -310,6 +324,7 @@ export default function Dashboard() {
             if (dRes.error) throw dRes.error;
 
             const dayRows = dRes.data || [];
+            daysRef.current = dayRows;
             setDays(dayRows);
 
             const cur = toInt(inf.current_day) || 1;
@@ -330,31 +345,35 @@ export default function Dashboard() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Load day -> exercises + session + lifts
     useEffect(() => {
         let cancelled = false;
 
         async function run() {
-            if (!user || !info?.active_split) return;
+            const userId = user?.id || null;
+            const splitId = info?.active_split || null;
+            if (!userId || !splitId) return;
             if (!selectedDayId) return;
 
             setBusy(true);
             setStatus({ type: "", msg: "" });
 
             try {
-                // CLEAR FIRST to avoid wiping data after load
+                // Clear UI for day switch (DON'T include these states in deps)
                 setMaxByExercise({});
                 setWorkInputsByExercise({});
                 setExercises([]);
+                exercisesRef.current = [];
                 setCurrentExerciseId("");
 
-                await loadDayExercises(selectedDayId, user.id);
+                await loadDayExercises(selectedDayId, userId);
 
-                const dayRow = days.find((d) => d.id === selectedDayId) || null;
-                const sess = dayRow ? await findTodaySession(user, info.active_split, dayRow) : null;
+                const dayRow = daysRef.current.find((d) => d.id === selectedDayId) || null;
+                const sess = dayRow ? await findTodaySession({ id: userId }, splitId, dayRow) : null;
 
                 if (cancelled) return;
                 setSession(sess);
-                await refreshDayLifts(sess?.id || null, user);
+                await refreshDayLifts(sess?.id || null, { id: userId });
             } catch (e) {
                 console.error(e);
                 if (!cancelled) setStatus({ type: "error", msg: e?.message || "Failed to load day." });
@@ -365,17 +384,19 @@ export default function Dashboard() {
 
         run();
         return () => { cancelled = true; };
-    }, [selectedDayId, user, info?.active_split, days]);
+    }, [selectedDayId, user?.id, info?.active_split, loadDayExercises]);
 
+    // When current exercise changes, ensure we have inputs + max
     useEffect(() => {
         let cancelled = false;
 
         async function run() {
-            if (!user || !currentExerciseId) return;
+            const userId = user?.id || null;
+            if (!userId || !currentExerciseId) return;
 
             try {
-                if (!maxByExercise[currentExerciseId]) {
-                    await fetchMaxForExercise(currentExerciseId, user.id);
+                if (!maxByExerciseRef.current[currentExerciseId]) {
+                    await fetchMaxForExercise(currentExerciseId, userId);
                 }
                 if (!cancelled) ensureInputsForExercise(currentExerciseId);
             } catch (e) {
@@ -386,7 +407,7 @@ export default function Dashboard() {
 
         run();
         return () => { cancelled = true; };
-    }, [currentExerciseId]); // intentional
+    }, [currentExerciseId, user?.id, fetchMaxForExercise, ensureInputsForExercise]);
 
     function updateWorkInput(exerciseId, idx, patch) {
         setWorkInputsByExercise((prev) => {
@@ -448,9 +469,7 @@ export default function Dashboard() {
                 })
                 .filter(Boolean);
 
-            if (!payload.length) {
-                throw new Error("Enter weight and reps for at least one working set.");
-            }
+            if (!payload.length) throw new Error("Enter weight and reps for at least one working set.");
 
             const ins = await supabase.from("landenlifts_lifts").insert(payload);
             if (ins.error) throw ins.error;
@@ -468,7 +487,10 @@ export default function Dashboard() {
                     .eq("user_id", user.id);
                 if (updSess.error) throw updSess.error;
 
-                const maxDays = (split?.days_per_week && Number.isFinite(split.days_per_week)) ? split.days_per_week : (days?.length || 1);
+                const maxDays = (split?.days_per_week && Number.isFinite(split.days_per_week))
+                    ? split.days_per_week
+                    : (days?.length || 1);
+
                 const cur = toInt(info?.current_day) || 1;
                 const next = (cur >= maxDays) ? 1 : (cur + 1);
 

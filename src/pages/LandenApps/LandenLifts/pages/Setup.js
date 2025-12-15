@@ -40,7 +40,7 @@ function uniqById(list) {
 }
 
 export default function Setup() {
-    const history = useHistory();
+   
 
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
