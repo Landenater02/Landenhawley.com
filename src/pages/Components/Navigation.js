@@ -118,12 +118,7 @@ export default function Navigation() {
     }, []);
 
 
-    const handleAvatarClick = function (e) {
-        e.stopPropagation();
-        setMenuOpen(function (s) {
-            return !s;
-        });
-    };
+    
 
     useEffect(function () {
         function onDocClick() {

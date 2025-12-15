@@ -1,6 +1,6 @@
 // src/pages/LandenApps/LandenLifts/Setup/Setup.jsx
 import React, { useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
+
 import supabase from "../../../../supabaseClient";
 
 function toIntOrNull(v) {
