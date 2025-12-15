@@ -157,34 +157,34 @@ p {
     color: var(--muted);
 }
 
-.nav-user .user-icon {
-    font-family: 'Nunito', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    font-size: 1.4rem;
-    color: var(--muted);
-}
+    .nav-user .user-icon {
+        font-family: 'Nunito', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        font-size: 1.4rem;
+        color: var(--muted);
+    }
 
-.nav-user .user-status {
-    font-family: 'Nunito', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
-}
+    .nav-user .user-status {
+        font-family: 'Nunito', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+    }
 
-.nav-user .user-status.online {
-    background: #22c55e; /* green */
-}
+        .nav-user .user-status.online {
+            background: #22c55e; /* green */
+        }
 
-.nav-user .user-status.offline {
-    background: #94a3b8; /* muted */
-}
+        .nav-user .user-status.offline {
+            background: #94a3b8; /* muted */
+        }
 
-.nav-user .user-label {
-    font-weight: 700;
-    font-size: .9rem;
-    color: var(--muted);
-}
+    .nav-user .user-label {
+        font-weight: 700;
+        font-size: .9rem;
+        color: var(--muted);
+    }
 
 /* dropdown menu */
 .nav-user {
@@ -216,11 +216,11 @@ p {
     z-index: 60;
 }
 
-.nav-user-menu .btn {
-    font-family: 'Nunito', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    width: 100%;
-    justify-content: flex-start;
-}
+    .nav-user-menu .btn {
+        font-family: 'Nunito', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        width: 100%;
+        justify-content: flex-start;
+    }
 
 /* Breadcrumb styles */
 .breadcrumbs {
@@ -413,5 +413,661 @@ pre {
     .footer {
         background: #0b1220;
         border-top-color: var(--border);
+    }
+}
+
+/* ====== LandenLifts (added) ====== */
+.landenlifts {
+    padding: var(--space-8) 0;
+}
+
+    .landenlifts .ll-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+    }
+
+    .landenlifts .ll-title {
+        margin: 0;
+    }
+
+    .landenlifts .ll-subtitle {
+        margin: 0;
+    }
+
+    .landenlifts .ll-actions {
+        display: flex;
+        gap: .5rem;
+        flex-wrap: wrap;
+    }
+
+    .landenlifts .ll-kv {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: .5rem 1rem;
+        margin-top: var(--space-4);
+    }
+
+    .landenlifts .ll-kv-key {
+        color: var(--muted);
+        font-weight: 700;
+    }
+
+    .landenlifts .ll-kv-val {
+        color: var(--text);
+        font-weight: 800;
+    }
+
+    .landenlifts .ll-divider {
+        height: 1px;
+        background: var(--border);
+        margin: var(--space-4) 0;
+    }
+
+    .landenlifts .ll-exercise {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: var(--space-4);
+        background: #fff;
+    }
+
+@media (prefers-color-scheme: dark) {
+    .landenlifts .ll-exercise {
+        background: #0f172a;
+    }
+}
+
+.landenlifts .ll-exercise-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-3);
+}
+
+.landenlifts .ll-exercise-name {
+    font-weight: 800;
+    color: var(--text);
+    margin: 0;
+}
+
+.landenlifts .ll-exercise-meta {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: .95rem;
+    margin: 0;
+}
+
+.landenlifts .ll-set-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: .5rem;
+    align-items: center;
+    margin-top: var(--space-3);
+}
+
+@media (max-width: 520px) {
+    .landenlifts .ll-set-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+        .landenlifts .ll-set-row .btn {
+            grid-column: 1 / -1;
+        }
+}
+
+.landenlifts .ll-logged {
+    margin-top: var(--space-3);
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-3);
+}
+
+.landenlifts .ll-logged-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .45rem .6rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    margin-top: .5rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.landenlifts .ll-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .25rem .6rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-weight: 800;
+    font-size: .85rem;
+}
+
+.landenlifts .ll-help {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: .95rem;
+    margin: 0;
+}
+
+.landenlifts .ll-error {
+    color: crimson;
+    font-weight: 800;
+}
+/* ====== Mobile improvements (append at bottom) ====== */
+
+/* Make tap targets nicer on mobile + avoid zoom-on-input in iOS */
+:root {
+    --tap: 44px; /* minimum comfortable tap height */
+}
+
+.input, .select, .textarea {
+    font-size: 16px; /* prevents iOS Safari auto-zoom */
+}
+
+/* Reduce side padding on smaller screens */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 var(--space-4);
+    }
+
+    .section {
+        padding: var(--space-6) 0;
+    }
+
+    .card {
+        padding: var(--space-4);
+    }
+
+    .btn {
+        min-height: var(--tap);
+        padding: .7rem 1rem;
+    }
+
+    /* Nav: allow wrapping and stop overflow */
+    .app-nav .inner {
+        height: auto;
+        padding: .6rem 0;
+        flex-wrap: wrap;
+        gap: .5rem;
+    }
+
+    .brand {
+        flex: 1 1 auto;
+        min-width: 140px;
+    }
+
+    .nav-links {
+        flex: 1 1 100%;
+        flex-wrap: wrap;
+        gap: .4rem;
+    }
+
+    .nav-link {
+        padding: .6rem .75rem;
+        border-radius: 12px;
+        min-height: var(--tap);
+    }
+
+    /* User menu: keep it aligned and not off-screen */
+    .nav-user {
+        margin-left: 0;
+    }
+
+    .nav-user-menu {
+        right: 0;
+        left: auto;
+        min-width: 200px;
+        max-width: min(90vw, 320px);
+    }
+}
+
+/* Extra-small phones */
+@media (max-width: 420px) {
+    .container {
+        padding: 0 var(--space-3);
+    }
+
+    /* Slightly smaller pills/text to avoid wrapping ugliness */
+    .landenlifts .ll-pill {
+        font-size: .8rem;
+    }
+
+    /* Exercise header stacks cleaner */
+    .landenlifts .ll-exercise-top {
+        gap: .5rem;
+    }
+}
+
+/* Prevent long things from blasting layout */
+pre {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.nav-link, .btn {
+    -webkit-tap-highlight-color: transparent;
+}
+/* ====== Hamburger nav ====== */
+
+/* Default: show desktop, hide mobile */
+.nav-links--desktop {
+    display: flex;
+}
+
+.nav-user--desktop {
+    display: inline-flex;
+}
+
+.nav-mobile {
+    display: none;
+    position: relative;
+}
+
+/* Hamburger button visuals */
+.nav-hamburger {
+    padding: .55rem .7rem;
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.hamburger-lines {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .hamburger-lines span {
+        width: 22px;
+        height: 2px;
+        background: var(--text);
+        border-radius: 999px;
+    }
+
+/* Mobile panel */
+.nav-mobile-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: min(92vw, 360px);
+    padding: var(--space-4);
+    z-index: 80;
+}
+
+.nav-mobile-links {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+}
+
+    .nav-mobile-links .nav-link {
+        width: 100%;
+        justify-content: flex-start;
+        min-height: 44px;
+    }
+
+.nav-mobile-divider {
+    height: 1px;
+    background: var(--border);
+    margin: var(--space-4) 0;
+}
+
+.nav-mobile-user-row {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+.nav-mobile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    object-fit: cover;
+    border: 1px solid rgba(0,0,0,0.25);
+    margin-left: auto;
+}
+
+.nav-mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-top: .75rem;
+}
+
+/* Breakpoint: switch to hamburger */
+@media (max-width: 768px) {
+    .nav-links--desktop {
+        display: none;
+    }
+
+    .nav-user--desktop {
+        display: none;
+    }
+
+    .nav-mobile {
+        display: block;
+    }
+}
+
+/* Dark mode hamburger lines */
+@media (prefers-color-scheme: dark) {
+    .hamburger-lines span {
+        background: var(--text);
+    }
+}
+/* ====== LandenLifts Dashboard mobile optimization ====== */
+
+.ll-dashboard {
+    --ll-green-bg: rgba(46, 204, 113, 0.18);
+    --ll-green-border: rgba(46, 204, 113, 0.55);
+    --ll-current-bg: rgba(0,0,0,0.02);
+    --ll-warmup-bg: rgba(0,0,0,0.03);
+}
+
+/* Status card */
+.ll-status {
+    border: 1px solid var(--border);
+}
+
+.ll-status-text {
+    margin: 0;
+    font-weight: 800;
+    color: var(--muted);
+}
+
+.ll-status--error .ll-status-text {
+    color: crimson;
+}
+
+.ll-status--ok .ll-status-text {
+    color: var(--text);
+}
+
+.ll-status--info .ll-status-text {
+    color: var(--muted);
+}
+
+/* Titles */
+.ll-page-title {
+    font-weight: 900;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.ll-meta-line {
+    font-weight: 800;
+}
+
+.ll-meta-strong {
+    font-weight: 900;
+}
+
+/* Header layout */
+.ll-header-row {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.ll-header-left {
+    flex: 1 1 420px;
+    min-width: 280px;
+}
+
+.ll-header-right {
+    flex: 1 1 420px;
+    min-width: 280px;
+}
+
+/* Current exercise top */
+.ll-current-top {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.ll-current-info {
+    flex: 1 1 520px;
+    min-width: 280px;
+}
+
+.ll-current-name {
+    font-weight: 900;
+    font-size: 18px;
+}
+
+.ll-current-sub {
+    margin-top: 6px;
+    color: var(--muted);
+    font-weight: 800;
+}
+
+.ll-current-cta {
+    flex: 0 0 auto;
+}
+
+.ll-primary-cta {
+    min-height: 44px;
+}
+
+/* Sets panel */
+.ll-sets {
+    box-shadow: none;
+    border: 1px solid var(--border);
+    padding: var(--space-4);
+}
+
+.ll-warmups {
+    margin-bottom: var(--space-4);
+}
+
+.ll-set-row2 {
+    display: grid;
+    grid-template-columns: 110px 1fr 1fr;
+    gap: .75rem;
+    align-items: end;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+}
+
+.ll-warmups .ll-set-row2 {
+    border-top: 0;
+}
+
+.ll-set-row2--warmup {
+    border-bottom: 1px solid var(--border);
+}
+
+.ll-set-badge {
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.ll-field {
+    min-width: 0;
+}
+
+.ll-input {
+    width: 100%;
+}
+
+.ll-input--warmup {
+    background: var(--ll-warmup-bg);
+}
+
+/* Plan list */
+.ll-card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.ll-card-title {
+    font-weight: 900;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.ll-muted-strong {
+    color: var(--muted);
+    font-weight: 800;
+}
+
+.ll-plan-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ll-plan-item {
+    width: 100%;
+    text-align: left;
+    border-radius: 12px;
+    padding: 12px 12px;
+    border: 1px solid var(--border);
+    background: #fff;
+    cursor: pointer;
+}
+
+    .ll-plan-item.is-current {
+        background: var(--ll-current-bg);
+    }
+
+    .ll-plan-item.is-complete {
+        border-color: var(--ll-green-border);
+        background: var(--ll-green-bg);
+    }
+
+.ll-plan-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ll-plan-name {
+    font-weight: 900;
+}
+
+.ll-plan-tag {
+    font-weight: 900;
+    color: var(--muted);
+}
+
+.ll-plan-sub {
+    margin-top: 6px;
+    color: var(--muted);
+    font-weight: 800;
+}
+
+/* Lifts list */
+.ll-lift-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ll-lift-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: none;
+    background: #fff;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.ll-lift-name {
+    font-weight: 900;
+}
+
+.ll-lift-val {
+    font-weight: 900;
+}
+
+/* Mobile: make the set rows stack and reduce min-width traps */
+@media (max-width: 560px) {
+    .ll-header-left, .ll-header-right,
+    .ll-current-info {
+        min-width: 0;
+        flex-basis: 100%;
+    }
+
+    .ll-current-cta {
+        width: 100%;
+    }
+
+    .ll-primary-cta {
+        width: 100%;
+    }
+
+    .ll-set-row2 {
+        grid-template-columns: 1fr;
+        gap: .5rem;
+    }
+
+    .ll-set-badge {
+        order: -1;
+    }
+}
+
+/* Prevent iOS zoom + nicer numeric entry */
+.ll-input {
+    font-size: 16px;
+}
+
+/* Dark mode tweaks (keep your theme) */
+@media (prefers-color-scheme: dark) {
+    .ll-sets,
+    .ll-plan-item,
+    .ll-lift-item {
+        background: #0f172a;
+        border-color: var(--border);
+    }
+
+        .ll-plan-item.is-current {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .ll-plan-item.is-complete {
+            background: rgba(46, 204, 113, 0.12);
+        }
+
+    .ll-input--warmup {
+        background: rgba(255,255,255,0.06);
+    }
+}
+.app-content {
+    padding-top: 12px;
+}
+/* ====== LandenLifts shell ====== */
+.ll-app {
+}
+
+.ll-main {
+    padding: var(--space-8) 0;
+}
+
+/* a little smaller on mobile */
+@media (max-width: 768px) {
+    .ll-main {
+        padding: var(--space-6) 0;
     }
 }

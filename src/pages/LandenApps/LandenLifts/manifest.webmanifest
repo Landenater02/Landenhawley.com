@@ -1,0 +1,21 @@
+{
+  "name": "LandenLifts",
+  "short_name": "Lifts",
+  "start_url": "/landenapps/landenlifts/",
+  "scope": "/landenapps/landenlifts/",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0090FD",
+  "icons": [
+    {
+      "src": "/landenapps/landenlifts/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/landenapps/landenlifts/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

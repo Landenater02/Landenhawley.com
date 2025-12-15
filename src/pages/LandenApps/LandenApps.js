@@ -38,6 +38,13 @@ export default function LandenApps() {
                 'At the request of my friends: a game where users collect \'Lukes\' by clicking in a Cookie Clicker style fashion',
             image: ThumbnailPath + 'LucasMurphyClicker.png',
         },
+        {
+            title: 'Landen Lifts: Weightlifting Tracker App',
+            href: 'landenlifts',
+            description:
+                'An all-in-one app for generating splits, keeping track of progress, and keeping data about your lifts',
+            image: ThumbnailPath + 'LandenLiftsThumbnail.png',
+        },
 
 
     
