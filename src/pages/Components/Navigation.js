@@ -93,6 +93,31 @@ export default function Navigation() {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
 
+
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const mobileMenuRef = useRef(null);
+
+    // close mobile menu on navigation
+    useEffect(() => {
+        setMobileOpen(false);
+    }, [pathname]);
+
+    // close on outside click
+    useEffect(() => {
+        function onDocClick(e) {
+            // close avatar menu
+            setMenuOpen(false);
+
+            // close mobile menu if click outside
+            if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+                setMobileOpen(false);
+            }
+        }
+        document.addEventListener("click", onDocClick);
+        return () => document.removeEventListener("click", onDocClick);
+    }, []);
+
+
     const handleAvatarClick = function (e) {
         e.stopPropagation();
         setMenuOpen(function (s) {
@@ -137,7 +162,8 @@ export default function Navigation() {
                     <span>Landen Hawley</span>
                 </div>
 
-                <nav className="nav-links">
+                {/* Desktop links */}
+                <nav className="nav-links nav-links--desktop" aria-label="Primary navigation">
                     <Link className={"nav-link " + (pathname === "/home" ? "active" : "")} to="/home">
                         Home
                     </Link>
@@ -149,21 +175,98 @@ export default function Navigation() {
                     </Link>
                 </nav>
 
-                <div className="nav-user" ref={menuRef}>
+                {/* Mobile hamburger */}
+                <div className="nav-mobile" ref={mobileMenuRef}>
+                    <button
+                        type="button"
+                        className="nav-hamburger btn"
+                        aria-label="Open menu"
+                        aria-expanded={mobileOpen}
+                        aria-controls="mobile-nav-panel"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setMobileOpen((s) => !s);
+                        }}
+                    >
+                        <span className="hamburger-lines" aria-hidden="true">
+                            <span />
+                            <span />
+                            <span />
+                        </span>
+                    </button>
+
+                    {mobileOpen ? (
+                        <div
+                            id="mobile-nav-panel"
+                            className="nav-mobile-panel card"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="nav-mobile-links">
+                                <Link className={"nav-link " + (pathname === "/home" ? "active" : "")} to="/home">
+                                    Home
+                                </Link>
+                                <Link className={"nav-link " + (pathname === "/AboutMe" ? "active" : "")} to="/AboutMe">
+                                    About Me
+                                </Link>
+                                <Link className={"nav-link " + (pathname.indexOf("/landenapps") === 0 ? "active" : "")} to="/landenapps">
+                                    LandenApps
+                                </Link>
+                            </div>
+
+                            <div className="nav-mobile-divider" />
+
+                            {/* User area in mobile menu */}
+                            <div className="nav-mobile-user">
+                                <div className="nav-mobile-user-row">
+                                    <span className={"user-status " + (session ? "online" : "offline")}></span>
+                                    <span className="user-label">{session ? "Signed in" : "Signed out"}</span>
+
+                                    {session && avatarUrl ? (
+                                        <img
+                                            src={avatarUrl}
+                                            alt="avatar"
+                                            className="nav-mobile-avatar"
+                                        />
+                                    ) : null}
+                                </div>
+
+                                {session ? (
+                                    <div className="nav-mobile-actions">
+                                        <button className="btn" onClick={handleUpdateAvatarClick}>
+                                            Update Avatar
+                                        </button>
+                                        <button className="btn" onClick={handleSignOut}>
+                                            Sign out
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        className="btn"
+                                        onClick={() => history.push("/login")}
+                                    >
+                                        Sign in
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    ) : null}
+                </div>
+
+                {/* Desktop user dropdown (keep your existing behavior) */}
+                <div className="nav-user nav-user--desktop" ref={menuRef}>
                     <div
                         className="nav-user-button"
                         role="button"
-                        onClick={handleAvatarClick}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setMenuOpen((s) => !s);
+                        }}
                         title={session ? "Open menu" : "Sign in"}
                         style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
                     >
-                       
-                        
-
                         <span className={"user-status " + (session ? "online" : "offline")}></span>
-
-                        {/* your label */}
                         <span className="user-label">{session ? "Signed in" : "Sign in"}</span>
+
                         {session && avatarUrl ? (
                             <img
                                 src={avatarUrl}
@@ -177,12 +280,12 @@ export default function Navigation() {
                                 }}
                             />
                         ) : (
-                            <div></div>
+                            <div />
                         )}
                     </div>
 
                     {menuOpen ? (
-                        <div className="nav-user-menu" onClick={function (e) { e.stopPropagation(); }}>
+                        <div className="nav-user-menu" onClick={(e) => e.stopPropagation()}>
                             {session ? (
                                 <>
                                     <button className="btn" onClick={handleUpdateAvatarClick}>
@@ -193,13 +296,7 @@ export default function Navigation() {
                                     </button>
                                 </>
                             ) : (
-                                <button
-                                    className="btn"
-                                    onClick={function () {
-                                        setMenuOpen(false);
-                                        history.push("/login");
-                                    }}
-                                >
+                                <button className="btn" onClick={() => history.push("/login")}>
                                     Sign in
                                 </button>
                             )}
@@ -209,4 +306,5 @@ export default function Navigation() {
             </div>
         </header>
     );
+
 }

@@ -2,14 +2,30 @@
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
+      "/*.css",
+      "/*.js",
+      "/*.map",
+      "/*.json",
+      "/*.webmanifest",
+      "/*.txt",
+      "/*.xml",
+      "/*.ico",
+      "/*.png",
+      "/*.svg",
+      "/*.jpg",
+      "/*.jpeg",
+      "/*.webp",
+      "/*.woff",
+      "/*.woff2",
+      "/*.ttf",
+      "/*.otf",
+
       "/static/*",
-      "/favicon.ico",
-      "/manifest.json",
-      "/images/*",
-      "/Images/*",
-      "/pages/*",
-      "/Pages/*",
-      "/Images/Gallery/*"
+      "/assets/*",
+
+      "/landenapps/landenlifts/sw.js",
+      "/landenapps/landenlifts/manifest.webmanifest",
+      "/landenapps/landenlifts/icons/*"
     ]
   }
 }
