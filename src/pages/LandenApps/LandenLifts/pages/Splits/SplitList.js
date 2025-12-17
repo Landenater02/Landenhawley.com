@@ -41,7 +41,7 @@ export default function SplitList({ userId, splits, selectedSplitId, onSelectSpl
                                 checked={isSelected}
                                 onChange={() => onSelectSplit(s.id)}
                             />
-                            <span style={{ fontWeight: 800 }}>{s.name}</span>
+                            <span style={{ fontWeight: 800 }}>{s.name}</span> <span style={{ color: "#cdd3db" }}>Code: {s.id}</span>
 
                             {isMine ? (
                                 <span style={{ marginLeft: "auto", color: "var(--muted)", fontWeight: 800 }}>Yours</span>

@@ -1,5 +1,6 @@
 /* ====== Base + Theme ====== */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
 
 :root {
     --brand: #0090FD;
@@ -7,7 +8,7 @@
     --brand-700: #006ec0;
     --bg: #ffffff;
     --text: #0f172a; /* near-slate-900 */
-    --muted: #475569; /* slate-600 */
+    --muted: 71, 85, 105; /* slate-600 */
     --border: #e2e8f0; /* slate-200 */
     --surface: #f8fafc; /* slate-50 */
 
@@ -222,6 +223,8 @@ p {
         justify-content: flex-start;
     }
 
+
+
 /* Breadcrumb styles */
 .breadcrumbs {
     display: flex;
@@ -286,6 +289,7 @@ p {
 
     .btn:hover {
         background: var(--surface);
+        cursor: pointer;
     }
 
     .btn:active {
@@ -319,6 +323,14 @@ p {
         margin-bottom: var(--space-3);
     }
 
+
+.inner-card {
+    background: rgba(var(--muted), 0.02);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: var(--space-5);
+}
 /* ====== Forms ====== */
 .label {
     display: block;
@@ -443,35 +455,53 @@ pre {
         flex-wrap: wrap;
     }
 
-    .landenlifts .ll-kv {
-        display: grid;
-        grid-template-columns: 160px 1fr;
-        gap: .5rem 1rem;
-        margin-top: var(--space-4);
+.ll-raaction {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+    .ll-raaction .btn {
+        width: 5rem;
+        height: 3rem;
+        background: var(--brand);
     }
 
-    .landenlifts .ll-kv-key {
-        color: var(--muted);
-        font-weight: 700;
-    }
+        .ll-raaction .btn i {
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        
 
-    .landenlifts .ll-kv-val {
-        color: var(--text);
-        font-weight: 800;
-    }
+.landenlifts .ll-kv {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: .5rem 1rem;
+    margin-top: var(--space-4);
+}
 
-    .landenlifts .ll-divider {
-        height: 1px;
-        background: var(--border);
-        margin: var(--space-4) 0;
-    }
+.landenlifts .ll-kv-key {
+    color: var(--muted);
+    font-weight: 700;
+}
 
-    .landenlifts .ll-exercise {
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: var(--space-4);
-        background: #fff;
-    }
+.landenlifts .ll-kv-val {
+    color: var(--text);
+    font-weight: 800;
+}
+
+.landenlifts .ll-divider {
+    height: 1px;
+    background: var(--border);
+    margin: var(--space-4) 0;
+}
+
+.landenlifts .ll-exercise {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    background: #fff;
+}
 
 @media (prefers-color-scheme: dark) {
     .landenlifts .ll-exercise {
@@ -972,7 +1002,7 @@ pre {
 .ll-plan-sub {
     margin-top: 6px;
     color: var(--muted);
-    font-weight: 800;
+   
 }
 
 /* Lifts list */
@@ -1054,6 +1084,7 @@ pre {
         background: rgba(255,255,255,0.06);
     }
 }
+
 .app-content {
     padding-top: 12px;
 }
@@ -1071,3 +1102,209 @@ pre {
         padding: var(--space-6) 0;
     }
 }
+/* ====== Song Viewer (append) ====== */
+.sv-search {
+    position: relative;
+}
+
+.sv-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    z-index: 40;
+}
+
+.sv-dropdown-item {
+    width: 100%;
+    text-align: left;
+    padding: .7rem .85rem;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+    .sv-dropdown-item:hover {
+        background: var(--surface);
+    }
+
+    .sv-dropdown-item.is-active {
+        background: rgba(0,144,253,.12);
+    }
+
+.sv-item-title {
+    font-weight: 900;
+    color: var(--text);
+}
+
+.sv-item-sub {
+    margin-top: 4px;
+    color: var(--muted);
+    font-weight: 700;
+    font-size: .9rem;
+}
+
+.sv-selected {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: .75rem .9rem;
+    background: var(--surface);
+}
+
+.sv-selected-label {
+    font-weight: 900;
+    color: var(--muted);
+    font-size: .85rem;
+}
+
+.sv-selected-title {
+    font-weight: 900;
+    color: var(--text);
+    margin-top: 4px;
+}
+
+.sv-setlist-list {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.sv-setlist-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: .7rem .85rem;
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+}
+
+    .sv-setlist-item:hover {
+        background: var(--surface);
+    }
+
+    .sv-setlist-item.is-active {
+        border-color: rgba(0,144,253,.55);
+        background: rgba(0,144,253,.10);
+    }
+
+.sv-setlist-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+}
+
+.sv-item-tag {
+    font-weight: 900;
+    color: var(--muted);
+}
+
+.sv-muted {
+    color: var(--muted);
+    font-weight: 700;
+    margin: 0;
+}
+
+.sv-view-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.sv-view-actions {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+}
+
+.sv-song-title {
+    margin: 0 0 .25rem;
+}
+
+.sv-notes {
+    margin: 0;
+}
+
+.sv-viewer {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+}
+
+.sv-frame {
+    width: 100%;
+    height: min(78vh, 900px);
+    border: 0;
+}
+
+.sv-image {
+    width: 100%;
+    height: auto;
+}
+
+/* Song Viewer file input button */
+.sv-file {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.sv-file__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    width: fit-content;
+    user-select: none;
+}
+
+    .sv-file__btn:hover {
+        filter: brightness(1.04);
+    }
+
+    .sv-file__btn:active {
+        transform: translateY(1px);
+    }
+
+    .sv-file__btn.is-disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+.sv-file__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.sv-file__meta {
+    font-weight: 800;
+}
+
+/* Optional: makes these button groups look tighter without changing your .btn */
+.sv-pillgroup {
+    display: inline-flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+

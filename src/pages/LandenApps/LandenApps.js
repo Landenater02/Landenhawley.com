@@ -17,14 +17,16 @@ export default function LandenApps() {
     
     var ThumbnailPath = "/Images/LandenAppsThumbnails/";
     var appPath = "/landenapps/";
-    const projects = [
+    const projects = [/*
     {
       title: 'Song Viewer',
       href: 'songviewer',
       description:
         'A Supabase + React app that lets you browse and display sheet music charts in real time.',
             image: '/Images/gallery/SongsPCF.png',
-    },{
+    },*/
+    
+    {
       title: 'Css Px to Rem/Em converter',
       href: 'css-converter',
       description:

@@ -59,6 +59,7 @@ function repsTargetFromRange(ex) {
 function repsRangeLabel(ex) {
     const a = ex?.rep_range_start;
     const b = ex?.rep_range_end;
+    if (a === b) return String(a);
     if (a && b) return `${a}-${b}`;
     if (a) return String(a);
     if (b) return String(b);
@@ -750,32 +751,7 @@ export default function Dashboard() {
                 )}
             </div>
 
-            {/* Lifts for the day */}
-            <div className="card ll-lifts-card">
-                <div className="ll-card-title">Lifts for this workout</div>
-
-                {!session ? (
-                    <div className="ll-muted-strong">
-                        No session started yet. It will be created when you log your first working set.
-                    </div>
-                ) : dayLifts.length === 0 ? (
-                    <div className="ll-muted-strong">
-                        Session started ({session.started_at}), but no lifts logged yet.
-                    </div>
-                ) : (
-                    <div className="ll-lift-list">
-                        {dayLifts.map((l, idx) => {
-                            const ex = exercises.find((e) => e.id === l.lift) || null;
-                            return (
-                                <div key={l.id || idx} className="ll-lift-item">
-                                    <div className="ll-lift-name">{ex ? ex.name : l.lift}</div>
-                                    <div className="ll-lift-val">{l.weight} x {l.reps}</div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
-            </div>
+            
         </div>
     );
 }

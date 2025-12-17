@@ -1,6 +1,5 @@
 // src/pages/LandenApps/LandenLifts/Setup/Setup.jsx
 import React, { useEffect, useMemo, useState } from "react";
-
 import supabase from "../../../../supabaseClient";
 
 function toIntOrNull(v) {
@@ -40,8 +39,6 @@ function uniqById(list) {
 }
 
 export default function Setup() {
-   
-
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [status, setStatus] = useState({ type: "", msg: "" }); // error|ok|info
@@ -50,7 +47,13 @@ export default function Setup() {
     const [info, setInfo] = useState(null); // { user_id, body_weight, active_split, current_day }
 
     const [split, setSplit] = useState(null); // {id,name,days_per_week}
-    const [exercises, setExercises] = useState([]); // split_exercises rows in the active split
+
+    // NEW: split days + selected day
+    const [days, setDays] = useState([]); // [{id, day, name}]
+    const [selectedDayId, setSelectedDayId] = useState("");
+
+    // exercises are now filtered by selected day
+    const [exercises, setExercises] = useState([]); // split_exercises rows for selected day
 
     const [bodyWeightDraft, setBodyWeightDraft] = useState("");
 
@@ -96,6 +99,8 @@ export default function Setup() {
 
                 if (!inf?.active_split) {
                     setSplit(null);
+                    setDays([]);
+                    setSelectedDayId("");
                     setExercises([]);
                     setMaxDrafts({});
                     setStatus({ type: "info", msg: "Pick a split first (Splits tab), then come back to Setup." });
@@ -113,46 +118,81 @@ export default function Setup() {
                 if (cancelled) return;
                 setSplit(splitRes.data);
 
-                // 1) get day ids
+                // Days (for selector)
                 const daysRes = await supabase
                     .from("landenlifts_split_days")
                     .select("id, day, name")
-                    .eq("split", inf.active_split);
+                    .eq("split", inf.active_split)
+                    .order("day", { ascending: true });
                 if (daysRes.error) throw daysRes.error;
 
-                const dayIds = (daysRes.data || []).map((d) => d.id).filter(Boolean);
-                if (!dayIds.length) {
+                const dayList = daysRes.data || [];
+                if (!dayList.length) {
+                    setDays([]);
+                    setSelectedDayId("");
                     setExercises([]);
                     setMaxDrafts({});
                     setStatus({ type: "info", msg: "No days found for this split yet. Create days in Split Editor." });
                     return;
                 }
 
-                // 2) get exercises for all those day ids
+                if (cancelled) return;
+                setDays(dayList);
+
+                // Default selected day:
+                // - prefer user_info.current_day if it exists
+                // - otherwise first day
+                const curDayNum = toIntOrNull(inf?.current_day);
+                const match = curDayNum ? dayList.find((d) => d.day === curDayNum) : null;
+                setSelectedDayId((match?.id || dayList[0]?.id) ?? "");
+            } catch (e) {
+                console.error(e);
+                if (!cancelled) setStatus({ type: "error", msg: e?.message || "Failed to load setup." });
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        }
+
+        run();
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    // Load exercises for selected day (and prefill max drafts for those exercises)
+    useEffect(() => {
+        let cancelled = false;
+
+        async function runDayExercises() {
+            if (!user || !info?.active_split || !selectedDayId) return;
+
+            setStatus((prev) => (prev?.type === "error" ? prev : { type: "", msg: "" }));
+
+            try {
+                // get exercises for selected day only
                 const exRes = await supabase
                     .from("landenlifts_split_exercises")
                     .select("id, name, split_day, order_index")
-                    .in("split_day", dayIds)
-                    .order("name", { ascending: true });
+                    .eq("split_day", selectedDayId)
+                    .order("order_index", { ascending: true });
+
                 if (exRes.error) throw exRes.error;
 
                 const exList = uniqById(exRes.data || []);
                 if (cancelled) return;
+
                 setExercises(exList);
 
-                // 3) pull current max (heaviest weight) per exercise for this user, and prefill drafts
-                const init = {};
+                // Prefill max drafts for these exercises (merge; don't wipe other days' drafts)
                 const fallbackDate = todayISODate();
-
                 const exIds = exList.map((e) => e.id).filter(Boolean);
 
                 let maxByLiftId = {};
                 if (exIds.length) {
-                    // Order by lift then weight desc so the first row we see per lift is its max
                     const maxRes = await supabase
                         .from("landenlifts_lifts")
                         .select("lift, weight, reps, created_at")
-                        .eq("user_id", u.id)
+                        .eq("user_id", user.id)
                         .in("lift", exIds)
                         .order("lift", { ascending: true })
                         .order("weight", { ascending: false })
@@ -171,30 +211,33 @@ export default function Setup() {
                     }
                 }
 
-                for (const ex of exList) {
-                    const m = maxByLiftId[ex.id];
-                    const created = m?.created_at ? String(m.created_at).slice(0, 10) : "";
-                    init[ex.id] = {
-                        weight: m?.weight != null ? String(m.weight) : "",
-                        reps: m?.reps != null ? String(m.reps) : "1",
-                        date: created || fallbackDate
-                    };
-                }
+                setMaxDrafts((prev) => {
+                    const next = { ...(prev || {}) };
+                    for (const ex of exList) {
+                        // preserve whatever user already typed for this exercise
+                        if (next[ex.id]) continue;
 
-                setMaxDrafts(init);
+                        const m = maxByLiftId[ex.id];
+                        const created = m?.created_at ? String(m.created_at).slice(0, 10) : "";
+                        next[ex.id] = {
+                            weight: m?.weight != null ? String(m.weight) : "",
+                            reps: m?.reps != null ? String(m.reps) : "1",
+                            date: created || fallbackDate,
+                        };
+                    }
+                    return next;
+                });
             } catch (e) {
                 console.error(e);
-                if (!cancelled) setStatus({ type: "error", msg: e?.message || "Failed to load setup." });
-            } finally {
-                if (!cancelled) setLoading(false);
+                if (!cancelled) setStatus({ type: "error", msg: e?.message || "Failed to load exercises for day." });
             }
         }
 
-        run();
+        runDayExercises();
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [user, info?.active_split, selectedDayId]);
 
     const canSaveBodyWeight = useMemo(() => {
         if (!user) return false;
@@ -205,19 +248,19 @@ export default function Setup() {
     }, [user, bodyWeightDraft]);
 
     const anyMaxFilled = useMemo(() => {
-        const keys = Object.keys(maxDrafts || {});
-        for (const k of keys) {
-            const row = maxDrafts[k];
+        // only consider maxes for currently displayed exercises
+        for (const ex of exercises || []) {
+            const row = maxDrafts?.[ex.id];
             const w = toIntOrNull(row?.weight);
             if (w && w > 0) return true;
         }
         return false;
-    }, [maxDrafts]);
+    }, [maxDrafts, exercises]);
 
     function updateMaxDraft(exId, patch) {
         setMaxDrafts((prev) => ({
             ...(prev || {}),
-            [exId]: { ...(prev?.[exId] || {}), ...patch }
+            [exId]: { ...(prev?.[exId] || {}), ...patch },
         }));
     }
 
@@ -256,7 +299,12 @@ export default function Setup() {
             setStatus({ type: "error", msg: "No active split found. Pick a split first." });
             return;
         }
+        if (!selectedDayId) {
+            setStatus({ type: "error", msg: "Pick a day first." });
+            return;
+        }
 
+        // Only save maxes for exercises shown (selected day)
         const payload = [];
         for (const ex of exercises || []) {
             const d = maxDrafts?.[ex.id];
@@ -271,12 +319,12 @@ export default function Setup() {
                 user_id: user.id,
                 weight: w,
                 reps,
-                __date: date
+                __date: date,
             });
         }
 
         if (!payload.length) {
-            setStatus({ type: "error", msg: "Enter at least one max weight to save." });
+            setStatus({ type: "error", msg: "Enter at least one max weight for this day to save." });
             return;
         }
 
@@ -292,19 +340,10 @@ export default function Setup() {
             }
 
             for (const date of Object.keys(byDate)) {
-                const curDayNum = toIntOrNull(info?.current_day) || 1;
+                // Attach to the SELECTED day (not current_day)
+                const splitDayId = selectedDayId;
 
-                const dayRowRes = await supabase
-                    .from("landenlifts_split_days")
-                    .select("id, day")
-                    .eq("split", split.id)
-                    .eq("day", curDayNum)
-                    .maybeSingle();
-                if (dayRowRes.error) throw dayRowRes.error;
-
-                const splitDayId = dayRowRes.data?.id || null;
-                if (!splitDayId) throw new Error("Could not find your current split day to attach maxes to.");
-
+                // Look for an open session for this split + selected day + date
                 const sessFind = await supabase
                     .from("landenlifts_session")
                     .select("id, user_id, split_id, split_day_id, started_at, completed_at")
@@ -321,14 +360,19 @@ export default function Setup() {
                 let sessId = sessFind.data?.[0]?.id || null;
 
                 if (!sessId) {
+                    // derive numeric day for the session row
+                    const selDayNum =
+                        days.find((d) => d.id === selectedDayId)?.day ??
+                        (toIntOrNull(info?.current_day) || 1);
+
                     const sessIns = await supabase
                         .from("landenlifts_session")
                         .insert({
                             user_id: user.id,
                             split_id: split.id,
-                            day: curDayNum,
+                            day: selDayNum,
                             split_day_id: splitDayId,
-                            started_at: date
+                            started_at: date,
                         })
                         .select("id")
                         .single();
@@ -341,7 +385,7 @@ export default function Setup() {
                     lift: r.lift,
                     weight: r.weight,
                     reps: r.reps,
-                    session: sessId
+                    session: sessId,
                 }));
 
                 const ins = await supabase.from("landenlifts_lifts").insert(liftsRows);
@@ -378,8 +422,6 @@ export default function Setup() {
                             Set your body weight and enter maxes.
                         </p>
                     </div>
-
-                    
                 </div>
 
                 {status.msg ? (
@@ -405,12 +447,7 @@ export default function Setup() {
                     </div>
 
                     <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-                        <button
-                            type="button"
-                            className="btn btn--primary"
-                            onClick={saveBodyWeight}
-                            disabled={busy || !canSaveBodyWeight}
-                        >
+                        <button type="button" className="btn btn--primary" onClick={saveBodyWeight} disabled={busy || !canSaveBodyWeight}>
                             {busy ? "Saving..." : "Save body weight"}
                         </button>
                     </div>
@@ -432,23 +469,42 @@ export default function Setup() {
                             Active split: <strong>{split?.name || info.active_split}</strong>
                         </p>
 
-                        {exercises.length === 0 ? (
-                            <p className="lead">No exercises found in this split yet. Add exercises in Split Editor first.</p>
+                        {/* NEW: Day selector */}
+                        {days.length ? (
+                            <div className="grid grid--2" style={{ alignItems: "end" }}>
+                                <div>
+                                    <label className="label">Day to set maxes for</label>
+                                    <select
+                                        className="select"
+                                        value={selectedDayId}
+                                        onChange={(e) => setSelectedDayId(e.target.value)}
+                                        disabled={busy}
+                                    >
+                                        {days.map((d) => (
+                                            <option key={d.id} value={d.id}>
+                                                {d.name ? `${d.name}` : `Day ${d.day}`}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                               
+                            </div>
+                        ) : null}
+
+                        <div style={{ height: 12 }} />
+
+                        {days.length && !selectedDayId ? (
+                            <p className="lead">Pick a day above.</p>
+                        ) : exercises.length === 0 ? (
+                            <p className="lead">No exercises found for this day yet. Add exercises in Split Editor first.</p>
                         ) : (
                             <div className="stack" style={{ gap: 10 }}>
                                 {exercises.map((ex) => {
                                     const d = maxDrafts?.[ex.id] || { weight: "", reps: "1", date: todayISODate() };
                                     return (
-                                        <div
-                                            key={ex.id}
-                                            className="card"
-                                            style={{ boxShadow: "none", border: "1px solid var(--border)" }}
-                                        >
+                                        <div key={ex.id} className="card" style={{ boxShadow: "none", border: "1px solid var(--border)" }}>
                                             <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
                                                 <div style={{ fontWeight: 900 }}>{ex.name}</div>
-                                                <div style={{ color: "var(--muted)", fontWeight: 800 }}>
-                                                   
-                                                </div>
                                             </div>
 
                                             <div style={{ height: 10 }} />
@@ -500,7 +556,7 @@ export default function Setup() {
                                 type="button"
                                 className="btn btn--primary"
                                 onClick={saveMaxesToLifts}
-                                disabled={busy || !anyMaxFilled || exercises.length === 0}
+                                disabled={busy || !anyMaxFilled || exercises.length === 0 || !selectedDayId}
                             >
                                 {busy ? "Saving..." : "Save maxes"}
                             </button>
